@@ -1,0 +1,13 @@
+[project]
+name = "llm-inferance"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.138.0",
+    "openai>=2.43.0",
+    "prometheus-fastapi-instrumentator>=8.0.0",
+    "pydantic-settings>=2.14.2",
+    "slowapi>=0.1.10",
+]

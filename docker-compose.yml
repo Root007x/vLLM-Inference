@@ -1,0 +1,45 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    depends_on:
+      - vllm
+
+  vllm:
+    image: vllm/vllm-openai:latest
+    runtime: nvidia
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+    command:
+      --model ${MODEL}
+      --host 0.0.0.0
+      --port 8000
+      --dtype auto
+      --max-model-len 4096
+      --gpu-memory-utilization 0.80
+      --enforce-eager
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+  dcgm:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter
+    runtime: nvidia
+    ports:
+      - "9400:9400"
