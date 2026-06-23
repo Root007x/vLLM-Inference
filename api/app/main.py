@@ -10,10 +10,16 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from .logging_config import setup_logging
+from .middleware import log_request
+
+setup_logging()
 
 app = FastAPI(
     title="LLM Inference API",
 )
+
+app.middleware("http")(log_request)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -34,5 +40,7 @@ async def chat(request: Request, body: ChatRequest, authorized: bool = Depends(a
 
 @app.post("/v1/chat/stream")
 @limiter.limit("10/minute")
-async def chat_stream(request: Request, body: ChatRequest, authorized: bool = Depends(auth)):
+async def chat_stream(
+    request: Request, body: ChatRequest, authorized: bool = Depends(auth)
+):
     return StreamingResponse(stream(body), media_type="text/event-stream")
