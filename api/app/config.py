@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     MODEL: str
     API_KEY: str
     VLLM_URL: str = "http://vllm:8000/v1"
+    MAX_CONCURRENT_REQUESTS: int = 10
 
     model_config = {
         "env_file": ".env",

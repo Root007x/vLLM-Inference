@@ -32,6 +32,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
 
   grafana:
     image: grafana/grafana
@@ -42,6 +43,7 @@ services:
       - prometheus
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
 
   dcgm:
     image: nvcr.io/nvidia/k8s/dcgm-exporter
@@ -55,6 +57,7 @@ services:
       - "3100:3100"
     volumes:
       - ./loki/loki-config.yml:/etc/loki/local-config.yml
+      - loki-data:/loki
     command: -config.file=/etc/loki/local-config.yml
 
   alloy:
@@ -74,3 +77,6 @@ services:
 
 volumes:
   alloy-data:
+  loki-data:
+  prometheus-data:
+  grafana-data:
