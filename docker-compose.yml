@@ -19,12 +19,14 @@ services:
       - HF_TOKEN=${HF_TOKEN}
     command:
       --model ${MODEL}
+      --quantization compressed-tensors
       --host 0.0.0.0
       --port 8000
       --dtype auto
       --max-model-len 4096
-      --gpu-memory-utilization 0.80
-      --enforce-eager
+      --gpu-memory-utilization 0.90
+      --max-num-seqs 8
+      --enable-prefix-caching
 
   prometheus:
     image: prom/prometheus
